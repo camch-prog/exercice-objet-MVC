@@ -2,35 +2,19 @@
 //CONTROLLER
 class controllerUsers{
     private ModelUser $modelUser;
-    private null $view_user;
+    private ViewUser $viewUser;
 
-    public function __construct() {
-        $this->modelUser = new ModelUser(connect());
+    public function __construct(ModelUser $model) {
+        $this->modelUser = $model;
+        $this->viewUser = new ViewUser;
     }
 
     public function render():void {
-        $modelUser=$this->modelUser;
 
-        $data = $modelUser->findAll();
-
-        //Appel de la view pour effectuer l'affichage
-        $title = "Mes Utilisateurs";
-        include('./view/viewHeader.php');
-        include('./view/viewUser.php');
-        include('./view/viewFooter.php');
+        $data = $this -> modelUser -> findAll();
+        $this->viewUser->setDataUsers($data);
+        $this -> viewUser -> allDisplay();
     } 
     
-    // function displayUsers(){
-    //     //Creation d'un objet ModelUser
-    //     $modelUser = new ModelUser(connect());
-
-    //     //Appel du model pour récupération des données
-    //     $data = $modelUser->findAll();
-
-    //     //Appel de la view pour effectuer l'affichage
-    //     $title = "Mes Utilisateurs";
-    //     include('./view/viewHeader.php');
-    //     include('./view/viewUser.php');
-    //     include('./view/viewFooter.php');
-    // }
+    
 }

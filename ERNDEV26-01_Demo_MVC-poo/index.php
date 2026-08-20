@@ -7,6 +7,9 @@ include('./model/modelUser.php');
 include('./model/modelArticle.php');
 include('./controller/controllerUsers.php');
 include('./controller/controllerArticle.php');
+include('./View/ViewFooter.php');
+include('./View/ViewHeader.php');
+include('./View/ViewUser.php');
 
 //1. Récupérer l'url demandé par l'utilisateur
 $url = parse_url($_SERVER['REQUEST_URI']);
@@ -18,7 +21,7 @@ $path = isset($url['path']) ? $url['path'] : '/';
 switch ($path) {
     case '/':
     case $_ENV['utilisateurs']:
-        $controller = new controllerUsers;
+        $controller = new controllerUsers(new ModelUser(connect()));
         $controller->render();
         break;
     case $_ENV['articles'] :
