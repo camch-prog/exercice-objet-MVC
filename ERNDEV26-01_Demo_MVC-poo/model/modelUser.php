@@ -1,6 +1,12 @@
 <?php
 //Class ModelUser
-class ModelUser{
+namespace Model;
+
+use Model\Model;
+use PDO;
+
+//extends : la propriété pour l'héritage. Ici ModelUser hérite de la class Model
+class ModelUser extends Model{
     //ATTRIBUTS
     //les attributs d'un model doivent correspondrent aux champs de la table correspondante en BDD
     private ?int $id; // le ? signifie que l'attribut a le droit d'être null
@@ -9,13 +15,8 @@ class ModelUser{
     private ?string $password;
     private ?string $createdAt;
     private ?string $role;
-    //On conserve l'objet de connexion PDO dans un attribut, pour que le model puisse l'utilser afin d'envoyer ses requête à la BDD
-    private PDO $bdd;
 
     //CONSTRUCTEUR
-    public function __construct(PDO $bdd){
-        $this->bdd = $bdd;
-    }
 
     //GETTER ET SETTER
 
@@ -24,7 +25,7 @@ class ModelUser{
         try{
             //1. Préparer une requête pour SELECT les utilisateurs
             //On utilise l'objet PDO stocké dans l'attribut bdd de notre model ($this->bdd)
-            $req = $this->bdd->prepare('SELECT u.id, u.pseudo, u.email, u.password, u.created_at, r.role FROM user u INNER JOIN role r ON r.id = u.role_id');
+            $req = $this->getBDD()->prepare('SELECT u.id, u.pseudo, u.email, u.password, u.created_at, r.role FROM user u INNER JOIN role r ON r.id = u.role_id');
 
             //2. Exécution de la requête
             $req->execute();
