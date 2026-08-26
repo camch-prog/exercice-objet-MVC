@@ -12,10 +12,11 @@ class ViewUser{
     //CONSTRUCTEUR
 
     //GETTER ET SETTER
-    public function setDataUsers(array $newData){
+    public function setData(array $newData){
         $this->dataUsers = $newData;
         $this->viewFooter = new ViewFooter();
         $this->viewHeader = new ViewHeader("Utilisateurs","./public/src/script/scriptUser.js");
+        return $this;
     }
 
     //METHODS

@@ -17,7 +17,7 @@ class ViewArticle{
 
     //GETTER ET SETTER
     // Le Controlleur a besoin de cette méthode public pour donner les data des articles depuis le Model à la View
-    public function setDataArticles(array $newArticles):self{
+    public function setData(array $newArticles):self{
         $this->dataArticles = $newArticles;
         return $this; //return $this (l'objet en cours) est pratique pour utiliser du chaînage de méthode
     }
