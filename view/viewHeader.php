@@ -1,8 +1,10 @@
 <?php
 namespace View;
 
+use View\View;
+
 //Class ViewHeader
-class ViewHeader{
+class ViewHeader {
     //ATTRIBUTS
     private ?string $title;
     private ?string $linkScript;
@@ -41,11 +43,11 @@ class ViewHeader{
         $this->buffer = ob_get_clean();
         return $this;
     }
-
-    //Method pour afficher le contenu de la mémoire tampon
-    public function display():void{
+    public function display(){
         echo $this->buffer;
     }
+
+    //Method pour afficher le contenu de la mémoire tampon
 }
 
 ?>

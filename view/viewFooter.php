@@ -1,7 +1,9 @@
 <?php
 namespace View;
 
-class ViewFooter{
+use View\View;
+
+class ViewFooter {
     //ATTRIBUT
     private ?string $buffer;
 
@@ -20,10 +22,9 @@ class ViewFooter{
 
         return $this;
     }
-
-    //methode d'affiche du contenu HTML
-    public function display():void{
-        echo $this->buffer; //affichage du contenu en mémoire tampon
+    public function display(){
+        echo $this->buffer;
     }
+    
 }
 

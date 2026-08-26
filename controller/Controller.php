@@ -2,11 +2,11 @@
 namespace Controller;
 
 use Model\Model;
-// use View;
+use View\View;
 
 class Controller {
     private Model $model;
-    private object $view;
+    private View $view;
 
     public function __construct(Model $model,object $view) {
         $this->model=$model;
