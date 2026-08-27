@@ -85,6 +85,7 @@ class ControllerUser extends Controller {
 
                 //Si aucune erreur, Verifier DB et création
                 if(empty($errors)) {
+                    $this->getModel()->setEmail($email)->setPseudo($pseudo)->setPassword(password_hash($password,PASSWORD_DEFAULT));
                     if(!empty($this->getModel()->findByEmail())) {
                             $errors[] =  "Un compte existe déjà avec cette adresse email.";
                     }
@@ -101,9 +102,16 @@ class ControllerUser extends Controller {
 
                         $this->getModel()->create_user($userData);
 
-                        $success = "Le compte ". htmlspecialchars($email,ENT_QUOTES,'UTF-8'). " à été créé avec succès.";
+                        $this->getView()->setMessage("Le compte ". htmlspecialchars($email,ENT_QUOTES,'UTF-8'). " à été créé avec succès.");
                     }
                 }
+            }
+            $message='';
+            if(!empty($errors)){
+                foreach($errors as $error){
+                    $message.="<li>".$error."</li>";
+                    }
+            $this->getView()->setMessage($message);
             }
     }
 }

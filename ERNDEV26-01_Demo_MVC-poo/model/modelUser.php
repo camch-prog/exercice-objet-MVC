@@ -85,11 +85,14 @@ class ModelUser extends Model{
 
     public function setPseudo (string $pseudo) {
         $this->pseudo =$pseudo;
+        return $this;
     }
     public function setEmail (string $email) {
         $this->email =$email;
+        return $this;
     }
     public function setPassword (string $password) {
         $this->password =$password;
+        return $this;
     }
 }

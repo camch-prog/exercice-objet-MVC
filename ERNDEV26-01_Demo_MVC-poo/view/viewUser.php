@@ -16,31 +16,38 @@ class ViewUser extends View{
         ob_start();
 ?>
             <main>
+                
                 <h1>Liste des utilisateurs</h1>
-                <ul>
-                <form action="" method="post">
+                <?php if (!isset($_SESSION["pseudo"])) :?>
+                <fieldset><legend>Connexion</legend>
+                <form action="" method="post" style="display:flex; flex-direction:column;">
                     <label for="email">Email</label><input type="text" name="email" id="email">
                     <label for="password">Mot de passe</label><input type="password" name="password" id='password'>
                     <input type="submit" value="Connexion" name="submit">
                 </form>
+                </fieldset>
 
-                <form action="" method="post">
+                <fieldset ><legend>Inscription</legend>
+                <form action="" method="post" style="display:flex; flex-direction:column; ">
                     <label for="email">Email</label><input type="text" name="email" id="email">
                     <label for="pseudo">Pseudo</label><input type="text" name="pseudo" id="pseudo">
                     <label for="password">Mot de passe</label><input type="password" name="password" id='password'>
                     <label for="passwordVerif">Verifier mot de passe</label><input type="password" name="passwordVerif" id='passwordVerif'>
                     <input type="submit" value="Connexion" name="submitInscription">
                 </form>
-
+                </fieldset>
                 <p><?= $this->getMessage()?>
-<?php  
+<?php   
+endif;
+if (isset($_SESSION["pseudo"])) :
                 // inclusion de la boucle foreach effectuer en 1. (plus haut) au sein du template HTML mis en buffer
+                ?><ul><?php
                 foreach($this->getData() as $row){
 ?>
                     <li>Pseudo : <?= $row['pseudo'] ?> - Email : <?= $row['email'] ?> - Role : <?= $row['role'] ?></li>
 <?php    
                 }
-?>
+endif ?>
                 </ul>
             </main>
 <?php
