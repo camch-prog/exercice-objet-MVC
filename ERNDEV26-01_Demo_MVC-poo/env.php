@@ -1,4 +1,6 @@
 <?php
 //Listes des Routes
-$_ENV['utilisateurs'] = "/MVC/";
-$_ENV['articles'] = "/MVC/articles";
+$_ENV['utilisateurs'] = "/";
+$_ENV['articles'] = "/articles";
+$_ENV['compte'] = "/compte";
+$_ENV['deco'] ="/deco";
