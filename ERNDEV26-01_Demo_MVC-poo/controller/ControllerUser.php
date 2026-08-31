@@ -10,81 +10,100 @@ namespace Controller;
 - Le nom du fichier doit être identique au nom de la class, majuscule comprise
 */
 
-use Model\ModelUser;
-use View\ViewUser;
+use Controller\Controller;
 
-class ControllerUser{
-    //ATTRIBUTS
-    private ModelUser $modelUser;
-    private ?ViewUser $viewUser;
-    private ?string $titre;
+class ControllerUser extends Controller {
 
-    //CONSTRUCTEUR
-    public function __construct(ModelUser $model, ViewUser $view){
-        $this->modelUser = $model;
-        $this->viewUser = $view;
+
+    public function seConnecter():void {
+        $message="";
+
+        //Verification que le formulaire soit envoyé
+        if(isset($_POST["submit"]) ){
+            
+            //néttoyage
+            $email = trim($_POST["email"] ?? '');
+            $password = $_POST["password"] ?? '';
+
+            //Vérification que les champs soient remplis
+            if(!empty($email) && !empty($password)) {
+                if(empty($message)) {
+                    $this->getModel()->setEmail($email);
+                    $user = $this->getModel()->findByEmail($email);
+                    if(!empty($user) && password_verify($password,$user["password"])) {
+                        $_SESSION["email"] = $user["email"];
+                        $_SESSION["pseudo"] = $user["pseudo"];
+                        $_SESSION["id"] = $user["id"];
+                        $_SESSION["role_id"] = $user["role_id"];
+                        $_SESSION["created_at"]=$user["created_at"];
+                        if(empty($user) || !password_verify($password, $user["password"])) {
+                        $message ="Les informations de connexion ne sont pas correctes." ;
+                    }
+                    
+                    }else {
+                        $message ="Les informations de connexion ne sont pas correctes." ;
+                    }
+                }
+            }else {
+                $message="Un des champs n'est pas remplis." ;
+            }
+            
+        }
+        $this->getView()->setMessage($message);
+        if(empty($message) && isset($_SESSION["pseudo"])) {
+            $this->getView()->setMessage("Bienvenue ".$_SESSION["pseudo"]);
+        }
     }
 
-    //GETTER ET SETTER
-    public function setTitre($newTitre):self{
-        $this->titre = newTitre;
-        return $this;
-    }
-    public function getTitre(){
-        return $this->titre;
-    }
-    /**
-     * Get the value of modelUser
-     *
-     * @return ModelUser
-     */
-    public function getModelUser(): ModelUser {
-        return $this->modelUser;
-    }
 
-    /**
-     * Set the value of modelUser
-     *
-     * @param ModelUser $modelUser
-     *
-     * @return self
-     */
-    public function setModelUser(ModelUser $modelUser): self {
-        $this->modelUser = $modelUser;
-        return $this;
-    }
+    public function registerUser():void {
+        $errors=[];
+        if(isset($_POST['submitInscription'])) {
 
-    /**
-     * Get the value of viewUser
-     *
-     * @return ?ViewUser
-     */
-    public function getViewUser(): ?ViewUser {
-        return $this->viewUser;
-    }
+                // Vérification CSRF
 
-    /**
-     * Set the value of viewUser
-     *
-     * @param ?ViewUser $viewUser
-     *
-     * @return self
-     */
-    public function setViewUser(?ViewUser $viewUser): self {
-        $this->viewUser = $viewUser;
-        return $this;
-    }
+                // Récupération des données brute, le mot de passe va etre haché plus tard
+                $email = trim($_POST["email"] ?? '');
+                $pseudo = trim($_POST["pseudo"] ?? '');
+                $password = $_POST["password"] ?? '';
+                $confirm = $_POST["passwordVerif"] ?? '';
 
-    //METHODS
-    public function render(){
-        //Appel du model pour récupération des données
-        $data = $this->modelUser->findAll();
+                // Validation des champs
+                if(empty($email) || empty($pseudo) || empty($password) || empty($confirm )) {
+                    $errors[] = "Un des champs n'est pas remplis.";
+                }
 
-        //2. Fournir les datas à la viewUser
-        $this->viewUser->setDataUsers($data);
+                // Validation du format de l'email
+                if(!empty($email) && !filter_var($email,FILTER_VALIDATE_EMAIL)) {
+                    $errors[] ="L'adresse email n'est pas valide.";
+                }
 
-        //Appel de la view pour effectuer l'affichage
-        $title = "Mes Utilisateurs";
-        $this->viewUser->displayAll();
+                // Validation de la correspondance des mots de passe
+                if($password !== $confirm) {
+                    $errors [] = "Les deux mots de passe ne correspondent pas.";
+                }
+
+                //Si aucune erreur, Verifier DB et création
+                if(empty($errors)) {
+                    if(!empty($this->getModel()->findByEmail())) {
+                            $errors[] =  "Un compte existe déjà avec cette adresse email.";
+                    }
+                    elseif(!empty($this->getModel()->findByPseudo())) {
+                            $errors[] =  "Un compte existe déjà avec ce pseudo.";
+                    } 
+                    else {
+                        // Inscription réussie
+                        $userData = [
+                            'email'=> $email,
+                            'pseudo'=>$pseudo,
+                            'password'=>password_hash($password,PASSWORD_DEFAULT)
+                        ];
+
+                        $this->getModel()->create_user($userData);
+
+                        $success = "Le compte ". htmlspecialchars($email,ENT_QUOTES,'UTF-8'). " à été créé avec succès.";
+                    }
+                }
+            }
     }
 }
