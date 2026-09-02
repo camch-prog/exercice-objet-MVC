@@ -3,14 +3,19 @@ namespace View;
 
 use View\View;
 
-class ViewArticle extends View{
+class ViewMesArticles extends View{
 
+    private string $messageDelete;
+
+    public function setMessageDelete(string $message) {
+        $this->messageDelete=$message;
+    }
     public function launchBuffer():self{
         //Lancement de la mise en mémoire tampon
         ob_start();
 ?>
             <main>
-                <h1>Liste des Articles</h1>
+                <h1>Liste des Articles de <?= $_SESSION["pseudo"] ?></h1>
                 <ul>
 <?php
                     //Boucle d'affichage du tableau de donnée des articles au sein du template HTML
@@ -20,8 +25,16 @@ class ViewArticle extends View{
                             <h2> <?= $row['title'] ?></h2>
                             <h3>By : <?= $row['pseudo'] ?></h3>
                             <form action="" method="post">
-                                <input type="hidden" name="id" href="<?=$row["id"] ?>">
-                                <a href="/oneArticle?id=<?=$row["id"] ?>">Afficher larticle</a>
+                                <?php if (!isset($_POST["submitDelete"])){
+                                    echo '<input type="submit" value="Supprimer cet article" name="submitDelete">';
+                                    }
+                                else {echo 
+                                '<label for="">Entrez votre mdp pour supprimer cet article</label><input type="password" name="password">
+                                <input type="hidden" name="articleTitle" value="'.$row["title"].'">
+                                <input type="submit" value="Supprimer cet article" name="validate">';
+                                
+                                }?>
+                                <?= $this->messageDelete ?? ""?>
                             </form>
                         </article>
 <?php
